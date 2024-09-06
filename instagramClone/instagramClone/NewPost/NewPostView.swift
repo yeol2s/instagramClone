@@ -9,27 +9,9 @@ import SwiftUI
 import PhotosUI // (PhotosPicker)사진선택 기능 구현 import
 
 struct NewPostView: View {
-    
-    @State var caption = ""
     // NewPostView에서 뒤로가기를 하면 TabView의 tabIndex를 0으로 변경해서 홈 화면으로 바로 이동하기 위한 변수(바인딩)
     @Binding var tabIndex: Int
-    
-    @State var selectedItem: PhotosPickerItem? // PhotosPicker item 저장 변수
-    @State var postImage: Image? // PhotosPicker item -> 이미지로 변경하여 저장할 변수
-    
-    // MARK: 임시위치
-    // PhotosPicker item을 이미지로 변환해주는 메서드
-    func convertImage(item: PhotosPickerItem?) async {
-        guard let item = item else { return }
-        // MARK: Data -> Image로 바로 변환이 안되므로 Data -> UIImage -> Image로 변환
-        // * 과정 : PhotosPikcerItem -> Data(바이너리) -> UIImage(UIKit) -> Image(SwiftUI)
-        // 1. loadTransferable : PhotosPicker item을 Data 형식(바이너리-0,1)으로 변경
-        guard let data = try? await item.loadTransferable(type: Data.self) else { return }
-        // 2. data를 UIKit의 UIImage로 변경
-        guard let uiImage = UIImage(data: data) else { return }
-        // 3. SwiftUI Image 형식으로 변경
-        self.postImage = Image(uiImage: uiImage)
-    }
+    @State var viewModel = NewPostViewModel() // (NewPost)뷰모델 (@Observable 감지위해 @State 선언) *기존 ObservableObject 프로토콜 사용시에는 @StateObject를 선언했었는데 변경된 부분 -> @State)
     
     var body: some View {
         VStack {
@@ -50,9 +32,9 @@ struct NewPostView: View {
             .padding(.horizontal)
             
             // MARK: PhotosPicker - 이미지를 클릭하면 이미지 변경이 가능하도록 PhotosPicker로 해당 이미지를 감싸줌(선택한 item(이미지)가 selection에 저장되도록 바인딩)
-            PhotosPicker(selection: $selectedItem) {
+            PhotosPicker(selection: $viewModel.selectedItem) {
                 // @State postImage 변수가 상태 변경된 것을 감지해서 이쪽 View가 다시 그려진다.
-                if let image = self.postImage { // PhotosPicker로 사진을 장착 후
+                if let image = self.viewModel.postImage { // PhotosPicker로 사진을 장착 후
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fill) // 원본 비율 유지(fill을 함으로써 이미지가 frame을 벗어나 잘릴 수 있음)
@@ -76,19 +58,22 @@ struct NewPostView: View {
             }
             // PhotosPicker에서 변화를 감지할 수 있도록 onChange 메서드
             // of: 감지할변수(값 변경되면 클로저 실행), 클로저 : oldValue(직전값), newValue(직후값)
-            .onChange(of: selectedItem) { oldValue, newValue in
+            .onChange(of: viewModel.selectedItem) { oldValue, newValue in
                 Task {
-                    await convertImage(item: newValue)
+                    await viewModel.convertImage(item: newValue)
                 }
             }
             
-            TextField("문구를 작성하거나 설문을 추가하세요...", text: $caption) // caption 바인딩
+            TextField("문구를 작성하거나 설문을 추가하세요...", text: $viewModel.caption) // caption 바인딩
                 .padding()
             
             Spacer()
             
             Button {
                 print("사진 공유")
+                Task { // 비동기 처리
+                    await viewModel.uploadPost()
+                }
             } label: {
                 Text("공유")
                     .frame(width: 363, height: 42)
