@@ -73,6 +73,8 @@ struct NewPostView: View {
                 print("사진 공유")
                 Task { // 비동기 처리
                     await viewModel.uploadPost()
+                    viewModel.clearData() // 게시글 초기화
+                    tabIndex = 0 // 첫번째 탭(홈)으로 이동
                 }
             } label: {
                 Text("공유")
