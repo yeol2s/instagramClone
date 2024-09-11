@@ -19,6 +19,7 @@ struct ImageFitAndFillView: View {
             //                .frame(width: 200, height: 100)
             
             // MARK: - 이 경우는 이미지 크기가 설정된 frame값대로 사이즈는 조정되지만 이미지 원본 비율이 깨진다. resizable만 하고 frame만 설정했을 때는 frame 크기 만큼만 꽉 차게 된다.(비율은 무시한 채)
+            // MARK: resizable은 자신이 차지할 수 있는 최대의 크기를 차지함
             Image(systemName: "trash.square.fill")
                 .resizable()
                 .frame(width: 200, height: 100)
