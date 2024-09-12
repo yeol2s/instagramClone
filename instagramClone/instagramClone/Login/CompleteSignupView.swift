@@ -41,15 +41,12 @@ struct CompleteSignupView: View {
                     .padding(.horizontal)
                 Spacer()
                 
-                Button {
+                BlueButtonView { // ViewBuilder
                     print("완료")
                 } label: {
                     Text("완료")
-                        .foregroundStyle(.white)
-                        .frame(width: 363, height: 42)
-                        .background(.blue)
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
                 }
+
                 Spacer()
             } //:VSTACK
         } //:ZSTACK

@@ -28,15 +28,13 @@ struct LoginView: View {
                         
                         SecureField("비밀번호", text: .constant("")) // 비밀번호(****)
                             .modifier(InstagramTextFieldModifier())
+        
                         
-                        Button {
+                        // MARK: New(ViewBuilder(View + Action)
+                        BlueButtonView { // ViewBuilder(view + action 인자)
                             print("로그인 되었습니다.")
                         } label: {
                             Text("로그인")
-                                .foregroundStyle(.white)
-                                .frame(width: 363, height: 42)
-                                .background(.blue)
-                                .clipShape(RoundedRectangle(cornerRadius: 20))
                         }
                         
                         Text("비밀번호를 잊으셨나요?")
