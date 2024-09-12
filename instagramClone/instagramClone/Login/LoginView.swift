@@ -24,26 +24,10 @@ struct LoginView: View {
                     
                     VStack(spacing: 20) {
                         TextField("이메일 주소", text: .constant("")) // .constant는 임시바인딩값 주기위함
-                            .textInputAutocapitalization(.never) // 첫글자가 대문자로 설정되는걸 방지(소문자를 강제하게)
-                            .padding(12)
-                            .background(.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 10)) // clipShape: 뷰의 경계를 특정모양으로 자름
-                            .overlay { // overlay: 인수로 전달된 뷰를 원래 뷰 위에 덧붙임 (.stroke를 통해 gray 테두리 그리는 것)
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(.gray, lineWidth: 1) // stroke: 주어진 두께로 도형의 외곽선 그리기
-                            }
-                            .padding(.horizontal)
+                            .modifier(InstagramTextFieldModifier()) // 뷰모디파이어 가져옴
                         
                         SecureField("비밀번호", text: .constant("")) // 비밀번호(****)
-                            .textInputAutocapitalization(.never)
-                            .padding(12)
-                            .background(.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .overlay {
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(.gray, lineWidth: 1)
-                            }
-                            .padding(.horizontal)
+                            .modifier(InstagramTextFieldModifier())
                         
                         Button {
                             print("로그인 되었습니다.")

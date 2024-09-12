@@ -9,12 +9,9 @@
 import SwiftUI
 
 struct EnterPasswordView: View {
-
-    @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        ZStack {
-            GradientBackgroundView() // 그라디언트 뷰
+        SignupBackgroundView {
             VStack {
                 Text("비밀번호 만들기")
                     .font(.title)
@@ -30,15 +27,7 @@ struct EnterPasswordView: View {
                     .padding(.bottom, 10)
                 
                 SecureField("비밀번호", text: .constant(""))
-                    .textInputAutocapitalization(.never)
-                    .padding(12)
-                    .background(.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(.gray, lineWidth: 1)
-                    }
-                    .padding(.horizontal)
+                    .modifier(InstagramTextFieldModifier())
                 
                 NavigationLink {
                     EnterNameView() // (다음 화면)회원가입 이름 입력 뷰
@@ -51,18 +40,7 @@ struct EnterPasswordView: View {
                 }
                 Spacer()
             } //:VSTACK
-        } //:ZSTACK
-        .navigationBarBackButtonHidden()
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "chevron.left")
-                        .tint(.black)
-                }
-            }
-        }
+        } //:ViewBuilder
     }
 }
 

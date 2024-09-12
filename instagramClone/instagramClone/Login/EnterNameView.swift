@@ -9,12 +9,9 @@
 import SwiftUI
 
 struct EnterNameView: View {
-
-    @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        ZStack {
-            GradientBackgroundView() // 그라디언트 뷰
+        SignupBackgroundView {
             VStack {
                 Text("이름 입력")
                     .font(.title)
@@ -24,15 +21,7 @@ struct EnterNameView: View {
                     .padding(.bottom, 5)
                 
                 TextField("성명", text: .constant(""))
-                    .textInputAutocapitalization(.never)
-                    .padding(12)
-                    .background(.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(.gray, lineWidth: 1)
-                    }
-                    .padding(.horizontal)
+                    .modifier(InstagramTextFieldModifier())
                 
                 NavigationLink {
                     EnterUserNameView() // (다음 화면)회원가입 사용자 이름 입력 뷰
@@ -45,18 +34,7 @@ struct EnterNameView: View {
                 }
                 Spacer()
             } //:VSTACK
-        } //:ZSTACK
-        .navigationBarBackButtonHidden()
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "chevron.left")
-                        .tint(.black)
-                }
-            }
-        }
+        } //:ViewBuilder
     }
 }
 
