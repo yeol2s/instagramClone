@@ -11,8 +11,11 @@ import SwiftUI
 struct CompleteSignupView: View {
     
     @Environment(\.dismiss) var dismiss
+    @Environment(SignupViewModel.self) var signupViewModel
     
     var body: some View {
+        @Bindable var signupViewModel = signupViewModel
+        
         ZStack {
             GradientBackgroundView()
             VStack {
@@ -35,14 +38,16 @@ struct CompleteSignupView: View {
                     }
                 
                 // 임시 텍스트
-                Text("열님, Instagram에 오신 것을 환영합니다.")
+                Text("\(signupViewModel.username)님, Instagram에 오신 것을 환영합니다.")
                     .font(.title)
                     .padding(.top, 30)
                     .padding(.horizontal)
                 Spacer()
                 
                 BlueButtonView { // ViewBuilder
-                    print("완료")
+                    Task { // async 함수를 호출하므로 비동기처리
+                        await signupViewModel.createUser() // 가입완료 테스트
+                    }
                 } label: {
                     Text("완료")
                 }

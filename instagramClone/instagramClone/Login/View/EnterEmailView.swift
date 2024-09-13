@@ -9,9 +9,16 @@
 import SwiftUI
 
 struct EnterEmailView: View {
-    
+    // MARK: 1. Environmnet(환경)에 들어간 뷰모델을 꺼내쓴다.
+    // 환경에 들어있는 뷰모델을 변수에 받아서 사용하겠다.
+    // 읽기만 한다면 이렇게만 선언해서 사용해도 되는데 데이터를 변경하는 경우에는 @Bindable을 사용해야함
+    @Environment(SignupViewModel.self) var signupViewModel
     
     var body: some View {
+        // MARK: 2. @Bindable 사용
+        // 뷰모델이 다시 여기에 바인딩을 시켜서 사용해야함(읽기/쓰기 모두 사용하려면)
+        @Bindable var signupViewModel = signupViewModel
+        
         // ViewBuilder 사용(마치 VStack, ZStack 처럼 content를 받아 View를 반환하는 역할이 됨(VStack, ZStack도 뷰빌더 구조인 것)
         // SignupBackgroundView(content: <#T##() -> View#>)
         // ZStack(content: () -> View)
@@ -32,7 +39,7 @@ struct EnterEmailView: View {
                     .padding(.horizontal)
                     .padding(.bottom, 10)
                 
-                TextField("이메일 주소", text: .constant("")) // .constant는 임시바인딩값 주기위함
+                TextField("이메일 주소", text: $signupViewModel.email)
                     .modifier(InstagramTextFieldModifier())
                 
                 NavigationLink {
