@@ -10,6 +10,8 @@ import SwiftUI
 
 struct LoginView: View {
     
+    @State var viewModel = LoginViewModel()
+    
     var body: some View {
         NavigationStack {
             ZStack { // 그라디언트뷰 위에 뷰 레이아웃 구성위해 ZStack
@@ -23,16 +25,19 @@ struct LoginView: View {
                     Spacer()
                     
                     VStack(spacing: 20) {
-                        TextField("이메일 주소", text: .constant("")) // .constant는 임시바인딩값 주기위함
+                        TextField("이메일 주소", text: $viewModel.email)
                             .modifier(InstagramTextFieldModifier()) // 뷰모디파이어 가져옴
                         
-                        SecureField("비밀번호", text: .constant("")) // 비밀번호(****)
+                        SecureField("비밀번호", text: $viewModel.password)
                             .modifier(InstagramTextFieldModifier())
         
                         
                         // MARK: New(ViewBuilder(View + Action)
                         BlueButtonView { // ViewBuilder(view + action 인자)
-                            print("로그인 되었습니다.")
+                            // 로그인
+                            Task {
+                                await viewModel.signIn()
+                            }
                         } label: {
                             Text("로그인")
                         }

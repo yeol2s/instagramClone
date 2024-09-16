@@ -15,7 +15,7 @@ struct ContentView: View {
         
         // MARK: 로그인 여부에 따라서 로그인창 띄울지 여부
         // (현재 유저 상태 확인)회원가입이 완료되면 로그인되고 메인화면으로 넘어갈 수 있도록
-        if AuthManager.shared.currentUserSession != nil { // 상태감지(AuthManager은 @Observable 매크로 설정)
+        if AuthManager.shared.currentAuthUser != nil { // 상태감지(AuthManager은 @Observable 매크로 설정)
             MainTabView() // 로그인 되었다면 메인뷰로
         } else {
             LoginView()

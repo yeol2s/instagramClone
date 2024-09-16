@@ -4,6 +4,7 @@
 //
 //  Created by 유성열 on 9/2/24.
 //
+// MARK: - NewPostView(게시물 등록)
 
 import SwiftUI
 import PhotosUI // (PhotosPicker)사진선택 기능 구현 import
