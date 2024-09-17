@@ -14,6 +14,7 @@ class ProfileViewModel {
     var user: User? // user 내부는 감지가 불가능함(모델이고 내부에 @State와 같은 선언이 안되어있으므로)
     
     // 프로필편집뷰(ProfileEditingView)에서 텍스트필드에서 바인딩(감지 가능하도록)이 될 수 있도록 감지 가능한 프로퍼티들(currentUser에서 빼내와서 초기화)
+    // 추가로 프로필뷰에서도 기존에는 user(User) 프로퍼티로 접근했었는데 빼내진 프로퍼티로 접근하도록 변경함
     var name: String
     var username: String
     var bio: String
@@ -28,6 +29,22 @@ class ProfileViewModel {
         self.name = user?.name ?? ""
         self.username = user?.username ?? ""
         self.bio = user?.bio ?? ""
+    }
+    
+    // 프로필을 편집하고 뒤로가기 할 때 데이터 저장될 수 있게
+    // (바인딩을 위해 user에서 꺼내왔으니)일단 user에 저장시키고 그 다음 서버에 올려야함
+    func updateUser() {
+        // 변동(수정)이 없거나 비어있을 때는 저장이 되지않도록
+        // swift 문법에서는 && 연산자를 ,(쉼표)로 대신할 수 있다.
+        if name != "", name != user?.name { // 쉼표(,)로 && 연산자 대체
+            user?.name = name
+        }
+        if username.isEmpty == false, username != user?.username {
+            user?.username = username
+        }
+        if !bio.isEmpty, bio != user?.bio {
+            user?.bio = bio
+        }
     }
     
     

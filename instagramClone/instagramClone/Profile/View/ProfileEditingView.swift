@@ -68,6 +68,7 @@ struct ProfileEditingView: View {
         .toolbar { // 커스텀 백버튼 만듦
             ToolbarItem(placement: .topBarLeading) {
                 Button {
+                    viewModel.updateUser() // 프로필 편집 변경사항 업데이트
                     dismiss()
                 } label: {
                     Image(systemName: "arrow.backward")

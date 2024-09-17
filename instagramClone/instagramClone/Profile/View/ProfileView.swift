@@ -34,7 +34,7 @@ struct ProfileView: View {
         NavigationStack {
             ScrollView {
                 VStack {
-                    Text("\(viewModel.user?.username ?? "")")
+                    Text("\(viewModel.username)")
                         .font(.title)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal)
@@ -65,11 +65,11 @@ struct ProfileView: View {
                     .padding(.horizontal)
                     
                     // 이름과 소개글
-                    Text("\(viewModel.user?.name ?? "")")
+                    Text("\(viewModel.name)")
                         .font(.callout)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal)
-                    Text("\(viewModel.user?.bio ?? "")")
+                    Text("\(viewModel.bio)")
                         .font(.callout)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal)
