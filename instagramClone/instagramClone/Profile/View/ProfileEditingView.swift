@@ -68,8 +68,10 @@ struct ProfileEditingView: View {
         .toolbar { // 커스텀 백버튼 만듦
             ToolbarItem(placement: .topBarLeading) {
                 Button {
-                    viewModel.updateUser() // 프로필 편집 변경사항 업데이트
-                    dismiss()
+                    Task {
+                        await viewModel.updateUser() // 프로필 편집 변경사항 업데이트
+                        dismiss() // dismiss가 Task 내/외부 위치하느냐에 따라 동작구조가 바뀜(내부에 있으면 비동기적으로 처리되므로 서버에 업데이트가 반영되어야 dismiss가 호출되고, 외부에 있으면 업데이트와 상관없이 바로 호출)
+                    }
                 } label: {
                     Image(systemName: "arrow.backward")
                         .tint(.black)
