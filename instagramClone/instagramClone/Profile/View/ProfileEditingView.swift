@@ -8,6 +8,7 @@
 // MARK: PhotosPicker 사용
 
 import SwiftUI
+import PhotosUI
 
 struct ProfileEditingView: View {
     
@@ -18,13 +19,42 @@ struct ProfileEditingView: View {
     
     var body: some View {
         VStack {
-            Image("profile_cat")
-                .resizable()
-                .frame(width: 75, height: 75)
-                .clipShape(Circle())
-                .padding(.bottom, 10)
-            Text("사진 또는 아바타 수정")
-                .foregroundStyle(.blue)
+            // 이미지를 PhotosPicker로 감싸줌(selection: 선택한 사진이 저장될 바인딩변수)
+            PhotosPicker(selection: $viewModel.selectedItem) {
+                VStack {
+                    // 사진 선택시 화면에 반영되도록(profileImage로 view에서 사용)
+                    if let profileImage = viewModel.profileImage {
+                        profileImage // Image View
+                            .resizable()
+                            .frame(width: 75, height: 75)
+                            .clipShape(Circle())
+                            .padding(.bottom, 10)
+                    } else { // 사진을 선택하지 않아서 이미지가 없으면
+                        Image(systemName: "person.circle.fill")
+                            .resizable()
+                            .frame(width: 75, height: 75)
+                        //1. opacity 같이 주는 방법
+//                            .foregroundStyle(Color.gray.opacity(0.5))
+                        //2.
+//                            .foregroundStyle(Color.gray)
+//                            .opacity(0.5)
+                        //3. UIKit CGColor 형식(.systemGray 1~5 단계별로 톤이 다름)
+                            .foregroundStyle(Color(.systemGray3))
+                            .clipShape(Circle())
+                            .padding(.bottom, 10)
+                    }
+                    Text("사진 또는 아바타 수정")
+                        .foregroundStyle(.blue)
+                } //:VSTACK
+            } //:PhotosPicker
+            // PhotosPicker에서 변화를 감지할 수 있도록 onChange 메서드
+            // of: 감지할변수(값 변경되면 클로저 실행), 클로저 : oldValue(직전값), newValue(직후값)
+            .onChange(of: viewModel.selectedItem) { oldValue, newValue in
+                Task {
+                    await viewModel.convertImage(item: newValue) // 이미지 장착
+                }
+            }
+            
             VStack(alignment: .leading, spacing: 5) {
                 Text("이름")
                     .foregroundStyle(.gray)

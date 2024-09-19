@@ -39,10 +39,21 @@ struct ProfileView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal)
                     HStack {
-                        Image(systemName: "person.circle.fill")
-                            .resizable()
-                            .frame(width: 75, height: 75)
-                            .opacity(0.6)
+                        // 프로필 이미지 반영
+                        if let profileImage = viewModel.profileImage {
+                            profileImage // Image View
+                                .resizable()
+                                .frame(width: 75, height: 75)
+                                .clipShape(Circle())
+                                .padding(.bottom, 10)
+                        } else { // 사진을 선택하지 않아서 이미지가 없으면
+                            Image(systemName: "person.circle.fill")
+                                .resizable()
+                                .frame(width: 75, height: 75)
+                                .foregroundStyle(Color.gray.opacity(0.5))
+                                .clipShape(Circle())
+                                .padding(.bottom, 10)
+                        }
                         VStack {
                             Text("124")
                                 .fontWeight(.semibold)

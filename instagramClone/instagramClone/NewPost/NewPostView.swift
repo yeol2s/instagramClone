@@ -56,12 +56,12 @@ struct NewPostView: View {
                         .tint(.black) // 여기서 틴트를 넣어주지 않아도 상위뷰(MainTabView)에서 틴트(.black)을 넣으므로 하위뷰들은 틴트가 자동으로 영향을 받는다.(프리뷰에선 안보임) - 프리뷰에서 보기위해서는 해주는게 좋음
                         .padding()
                 }
-            }
+            } //:PhotosPicker
             // PhotosPicker에서 변화를 감지할 수 있도록 onChange 메서드
             // of: 감지할변수(값 변경되면 클로저 실행), 클로저 : oldValue(직전값), newValue(직후값)
             .onChange(of: viewModel.selectedItem) { oldValue, newValue in
                 Task {
-                    await viewModel.convertImage(item: newValue)
+                    await viewModel.convertImage(item: newValue) // 이미지 장착
                 }
             }
             

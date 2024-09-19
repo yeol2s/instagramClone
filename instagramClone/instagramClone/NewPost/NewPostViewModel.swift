@@ -21,7 +21,7 @@ class NewPostViewModel {
     var postImage: Image? // PhotosPicker item -> 이미지로 변경하여 저장할 변수
     var uiImage: UIImage? // 이미지 업로드를 위해 converImage 메서드에서 'data를 UIKit의 UIImage로 변경'하는 과정의 uiImage를 저장하기 위함
     
-    // PhotosPicker item을 이미지로 변환해주는 메서드
+    // PhotosPicker item을 이미지로 변환해주는 메서드(이미지 장착하는 것)
     func convertImage(item: PhotosPickerItem?) async {
         guard let item = item else { return }
         // MARK: Data -> Image로 바로 변환이 안되므로 Data -> UIImage -> Image로 변환

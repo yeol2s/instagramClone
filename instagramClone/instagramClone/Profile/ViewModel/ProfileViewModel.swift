@@ -7,8 +7,9 @@
 // MARK: - ProfileViewModel(프로필뷰모델)
 // 프로필에서 화면에 유저정보 데이터(사진, 이름, 소개등)를 가져와서 뷰에 전달해야 함
 // 데이터는 AuthManager에 currentUser가 가지고 있음
-import Foundation
+import SwiftUI // ImageView 사용으로 인한 import
 import Firebase
+import PhotosUI
 
 @Observable
 class ProfileViewModel {
@@ -20,6 +21,11 @@ class ProfileViewModel {
     var username: String
     var bio: String
     
+    // MARK: PhotosPicker
+    var selectedItem: PhotosPickerItem? // PhotosPicker item 저장 변수
+    var profileImage: Image? // PhotosPicker item -> 이미지로 변경하여 저장할 변수
+    var uiImage: UIImage? // 이미지 업로드를 위해 converImage 메서드에서 'data를 UIKit의 UIImage로 변경'하는 과정의 uiImage를 저장하기 위함
+    
     init() {
         // MARK: let user에 할당 후 user(프로퍼티)를 초기화 시키는 이유는 이 생성자에서 바인딩을 위해 유저정보를 아래에서 프로퍼티에 초기화시키고 있는데 생성자내에서 (프로퍼티)user를 초기화시키면서 동시에 다른 프로퍼티(name, username, bio)에 (프로퍼티)user를 가져다 쓸 수 없다.(금지되어있음) 그래서 생성자내에서 (상수)user를 만들고 (프로퍼티)user를 초기화 시킴과 동시에 나머지 프로퍼티를 user로 초기화시킴
         // 생성자내에서 가장 가까운 (상수)user를 가져다가 프로퍼티들을 초기화시킨다. *(상수)user 이름을 변경해서 구분해도 되긴함(ex: tempUser)
@@ -30,6 +36,22 @@ class ProfileViewModel {
         self.name = user?.name ?? ""
         self.username = user?.username ?? ""
         self.bio = user?.bio ?? ""
+    }
+    
+    // PhotosPicker item을 이미지로 변환해주는 메서드(이미지 장착하는 것)
+    func convertImage(item: PhotosPickerItem?) async {
+        guard let item = item else { return }
+        // MARK: Data -> Image로 바로 변환이 안되므로 Data -> UIImage -> Image로 변환
+        // * 과정 : PhotosPikcerItem -> Data(바이너리) -> UIImage(UIKit) -> Image(SwiftUI)
+        // 1. loadTransferable : PhotosPicker item을 Data 형식(바이너리-0,1)으로 변경
+        // 여기서 await을 비동기 처리 하지 않은 이유는 위 메서드에서 async를 사용하므로써 상위로 넘겨준 것
+        guard let data = try? await item.loadTransferable(type: Data.self) else { return }
+        // 2. data를 UIKit의 UIImage로 변경
+        guard let uiImage = UIImage(data: data) else { return }
+        // 3. SwiftUI Image 형식으로 변경
+        self.profileImage = Image(uiImage: uiImage)
+        // (uploadPost시)이미지 업로드 인자값으로 사용하기 위함
+        self.uiImage = uiImage
     }
     
     // 프로필을 편집하고 뒤로가기 할 때 데이터 저장될 수 있게
