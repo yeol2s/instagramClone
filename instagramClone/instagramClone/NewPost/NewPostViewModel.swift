@@ -42,13 +42,14 @@ class NewPostViewModel {
     func uploadPost() async { // async를 한번 더 상위로 넘김(View에서 Task 처리할 것임)
         guard let uiImage else { return } // (팁) 옵셔널 바인딩할때 guard let uiImage = self.uiImage else 이렇게 할때 변수이름이 똑같다면 생략 가능함
         guard let imageUrl = await uploadImage(uiImage: uiImage) else { return }// url은 Firebase에서 사진을 내려받을 수 있는 주소임(이미지가 저장된 주소)
+        guard let userId = AuthManager.shared.currentAuthUser?.uid else { return } // 게시글 업로드시 현재 유저에 대한 UID가 들어감(해당 유저로 등록된 게시물들을 UID로 구분할 수 있도록)
         
         // FireStore 인스턴스 생성하면서 컬렉션 추가
         // 게시글은 Firestore Database에서 저장(이미지는 대용량으로서 Storage에 저장했음)
         // Firebase Database에는 collection과 document 개념이 존재하는데, (excel로 치면)collection은 하나의 '시트'이고 도큐먼트는 하나의 '행' 같은 개념 (postReference는 post의 저장할 위치 정보를 담게 됨)
         let postReference = Firestore.firestore().collection("posts").document() // "posts" 라는 컬렉션(하나의 그룹)을 만들고 -> 그 안에 있는 모든 document에 접근(document에 인자값 전달하여 원하는 값만 뽑아낼 수도 있음)
         // documnetID는 FireStore에서 각 문서를 고유하게 식별하는 ID로서 사용자 지정으로 생성하거나 자동 생성이됨
-        let post = Post(id: postReference.documentID, caption: caption, like: 0, imageUrl: imageUrl, date: Date()) // 업로드해야할 정보 만듦(Post Model) (documentID는 새로운 ID를 제공해주는 것)
+        let post = Post(id: postReference.documentID, userId: userId, caption: caption, like: 0, imageUrl: imageUrl, date: Date()) // 업로드해야할 정보 만듦(Post Model) (documentID는 새로운 ID를 제공해주는 것)
         
         // (업로드 전)encode를 해줘야함(내가 만든 Post 모델은 Swift문법이므로 Firebase에서 이해할 수 있도록 인코딩해서 업로드 -> 파베에서는 알아서 디코딩해서 사용할 것)
         do {

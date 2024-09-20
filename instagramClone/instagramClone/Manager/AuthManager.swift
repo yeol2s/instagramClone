@@ -18,7 +18,7 @@ class AuthManager {
     
     // Auth.auth().currentUser : 회원가입이나 로그인을 하면 currentUser에 로그인된 사용자값이 세팅된다.(이것으로 로그인이 됐는지 안됐는지 파악)
     // Auth.auth().currentUser으로 접근하는 것은 Firebase에서 제공하는 것이므로 자체로는 @State와 같은 상태감지 래퍼를 사용할 수 없음, @Observable을 적용 위해 이렇게 변수로 만듦
-    var currentAuthUser: FirebaseAuth.User? // currentUserSession -> currentAuthUser 변경
+    var currentAuthUser: FirebaseAuth.User?
     var currentUser: User?
     
     private init() {

@@ -116,23 +116,17 @@ struct ProfileView: View {
                     // columns는 GridItem을 설정하여 넣어줌(Grid 방식을 설정)
                     // spacing으로 세로 간격 설정(열 간격은 GridItem 설정)
                     LazyVGrid(columns: columns, spacing: 2) {
-                        ForEach(0..<10) { _ in
-                            Image("image_dog")
+                        // .task에서 loadUserPosts가 호출되면 뷰모델에 posts에 post 데이터가 쌓이므로 그걸 가져와 씀
+                        ForEach(viewModel.posts) { post in
+                            let url = URL(string: post.imageUrl) // 이미지가 저장되어 있는 url을 가져오고
+                            KFImage(url) // 킹피셔 라이브러리(캐싱가능한 이미지 로드)
                                 .resizable()
-                                .scaledToFit()
-                            Image("image_dragon")
-                                .resizable()
-                                .scaledToFit()
-                            Image("image_lion")
-                                .resizable()
-                                .scaledToFit()
-                            Image("image_penguin")
-                                .resizable()
-                                .scaledToFit()
-                            Image("profile_cat")
-                                .resizable()
-                                .scaledToFit()
+                                .aspectRatio(1, contentMode: .fill) // .scaledToFill()로 하면 (세로가 더 긴)특정 이미지는 비율이 안맞는 문제 발생
                         }
+                    }
+                    // 비동기 처리를 위해 .task (View의 생명주기에 맞춰 비동기작업 실행)
+                    .task {
+                        await viewModel.loadUserPosts() // Post를 불러옴
                     }
                     
                     Spacer()

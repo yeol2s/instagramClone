@@ -22,6 +22,8 @@ class ProfileViewModel {
     var username: String
     var bio: String
     
+    var posts: [Post] = [] // post를 저장할 배열
+    
     // MARK: PhotosPicker
     var selectedItem: PhotosPickerItem? // PhotosPicker item 저장 변수
     var profileImage: Image? // PhotosPicker item -> 이미지로 변경하여 저장할 변수
@@ -131,4 +133,24 @@ class ProfileViewModel {
         }
     }
     
+    // Posts 데이터들 가져오기
+    func loadUserPosts() async {
+        // Document중에서 userId가 현재 Id와 같은 것들을 가져와야 하므로 whereField(field: isEqualTo:)사용(isEqualTo: userId 필드가 (프로퍼티)user?.id와 같은지 체크)
+        // .order(by: date필드, descending: 내림차순-true) 로 포스트 정렬
+        do {
+            let documents = try await Firestore.firestore().collection("posts").order(by: "date", descending: true)
+                .whereField("userId", isEqualTo: user?.id ?? "").getDocuments().documents
+            
+            // post를 임시저장
+            var posts: [Post] = []
+            // documents에 있는 데이터들을 Post 타입으로 변환하기 위한 루프
+            for document in documents {
+                let post = try document.data(as: Post.self) // Post 타입으로 변경해서 post에 담음(as: 원하는 타입)
+                posts.append(post)
+            }
+            self.posts = posts // 변형한 post 배열을 전달
+        } catch {
+            print("DEBUG: Failed to load user posts with error \(error.localizedDescription)")
+        }
+    }
 }
