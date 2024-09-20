@@ -9,6 +9,7 @@
 
 import SwiftUI
 import PhotosUI
+import Kingfisher // (캐싱을 사용하는 이미지 로드)라이브러리 *AsyncImage 대용
 
 struct ProfileEditingView: View {
     
@@ -29,15 +30,35 @@ struct ProfileEditingView: View {
                             .frame(width: 75, height: 75)
                             .clipShape(Circle())
                             .padding(.bottom, 10)
+                    } else if let imageUrl = viewModel.user?.profileImageUrl  { // 서버에 있는지 체크
+                        // 첫번째 우선순위로는 프로필 사진 선택시 선택된 것을 가져오는 것을 우선으로 하고 선택하지 않았을때에는 서버에 있는지 체크
+                        let url = URL(string: imageUrl) // URL형식으로 변경하고
+                        // MARK: (New)Kingfisher 사용 (캐싱 가능한 이미지 로드 라이브러리)
+                        KFImage(url) // (내부적으로 캐싱이 구현되어있음)URL을 판별하여 이미 접근한 이미지인 경우 비동기적으로 캐시에서 저장된 데이터 이미지를 가져옴
+                            .resizable()
+                            .frame(width: 75, height: 75)
+                            .clipShape(Circle())
+                            .padding(.bottom, 10)
+                        
+                        // MARK: (Old)AsyncImage는 따로 캐싱(임시저장)을 못하고 계속해서 이미지를 불러온다.(편집 뷰에 진입할때마다 계속 이미지를 불러오고 로딩을 발생시키므로 캐싱을 따로 구현해줘야 한다. -> 직접 구현에는 번거로움이 있으므로 라이브러리 사용)
+//                        AsyncImage(url: url) { image in // AsyncImage: URL로 이미지를 가져오는 뷰
+//                            image
+//                                .resizable()
+//                                .frame(width: 75, height: 75)
+//                                .clipShape(Circle())
+//                                .padding(.bottom, 10)
+//                        } placeholder: { // 이미지가 가지고 올동안(로딩시간동안)보여줘야 할 임시이미지
+//                            ProgressView() // 로딩뷰
+//                        }
                     } else { // 사진을 선택하지 않아서 이미지가 없으면
                         Image(systemName: "person.circle.fill")
                             .resizable()
                             .frame(width: 75, height: 75)
                         //1. opacity 같이 주는 방법
-//                            .foregroundStyle(Color.gray.opacity(0.5))
+                        //                            .foregroundStyle(Color.gray.opacity(0.5))
                         //2.
-//                            .foregroundStyle(Color.gray)
-//                            .opacity(0.5)
+                        //                            .foregroundStyle(Color.gray)
+                        //                            .opacity(0.5)
                         //3. UIKit CGColor 형식(.systemGray 1~5 단계별로 톤이 다름)
                             .foregroundStyle(Color(.systemGray3))
                             .clipShape(Circle())
@@ -83,7 +104,7 @@ struct ProfileEditingView: View {
                 Text("소개")
                     .foregroundStyle(.gray)
                     .fontWeight(.bold)
-//                TextField("소개", text: .constant("세계를 정복한다."))
+                //                TextField("소개", text: .constant("세계를 정복한다."))
                 TextField("소개", text: $viewModel.bio)
                     .font(.title2)
                 Divider()

@@ -6,6 +6,7 @@
 //
 // MARK: - ProfileView(프로필뷰)
 import SwiftUI
+import Kingfisher // (캐싱을 사용하는 이미지 로드)라이브러리 *AsyncImage 대용
 
 struct ProfileView: View {
     @State var viewModel = ProfileViewModel() // 프로필뷰모델
@@ -46,6 +47,16 @@ struct ProfileView: View {
                                 .frame(width: 75, height: 75)
                                 .clipShape(Circle())
                                 .padding(.bottom, 10)
+                        } else if let imageUrl = viewModel.user?.profileImageUrl  { // 서버에 있는지 체크
+                            // 첫번째 우선순위로는 프로필 사진 선택시 선택된 것을 가져오는 것을 우선으로 하고 선택하지 않았을때에는 서버에 있는지 체크
+                            let url = URL(string: imageUrl) // URL형식으로 변경하고
+                            // MARK: Kingfisher 사용 (캐싱 가능한 이미지 로드 라이브러리)
+                            KFImage(url) // (내부적으로 캐싱이 구현되어있음)URL을 판별하여 이미 접근한 이미지인 경우 비동기적으로 캐시에서 저장된 데이터 이미지를 가져옴
+                                .resizable()
+                                .frame(width: 75, height: 75)
+                                .clipShape(Circle())
+                                .padding(.bottom, 10)
+                            
                         } else { // 사진을 선택하지 않아서 이미지가 없으면
                             Image(systemName: "person.circle.fill")
                                 .resizable()

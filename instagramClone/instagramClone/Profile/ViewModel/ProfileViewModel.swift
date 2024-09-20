@@ -9,6 +9,7 @@
 // 데이터는 AuthManager에 currentUser가 가지고 있음
 import SwiftUI // ImageView 사용으로 인한 import
 import Firebase
+import FirebaseStorage
 import PhotosUI
 
 @Observable
@@ -81,26 +82,52 @@ class ProfileViewModel {
         }
     }
     
+    // 원격 서버로 (저장할)프로필 데이터를 보내는 작업
     func updateUserRemote() async throws { // async, throws 상위로 올림
         var editedData: [String: Any] = [:]
         
         if name != "", name != user?.name { // 쉼표(,)로 && 연산자 대체
-//            user?.name = name
             editedData["name"] = name
         }
         if username.isEmpty == false, username != user?.username {
-//            user?.username = username
             editedData["username"] = username
         }
         if !bio.isEmpty, bio != user?.bio {
-//            user?.bio = bio
             editedData["bio"] = bio
+        }
+        // 프로필 이미지 업로드
+        if let uiImage = self.uiImage {
+            let imageUrl = await uploadImage(uiImage: uiImage)
+            editedData["profileImageUrl"] = imageUrl // editedData 딕셔너리(key = profileImageUrl)에 imageUrl을 추가
         }
         
         // editeData가 비어있지 않고 UID가 바인딩 성공했을때만 서버에 올림
         if !editedData.isEmpty, let userId = user?.id {
             try await Firestore.firestore().collection("users").document(userId).updateData(editedData) // UID로 저장된 documnet를 가져옴(해당 아이디의 정보로 접근할 수 있게됨) 그리고 updateData를 통해 editedData를 넣어주면 변경된 정보가 딕셔너리 형태로 전달되어 Firestore Database에 적용됨(수정된 것만 반영되어 업데이트)
             
+        }
+    }
+    
+    // 프로필 사진 업로드(서버로 사진 업로드)
+    func uploadImage(uiImage: UIImage) async -> String? { // (반환) -> 사진을 올린 주소
+        // jpegData를 사용하면 파일이 jpeg로 압축됨
+        guard let imageData = uiImage.jpegData(compressionQuality: 0.5) else { return nil }
+        let fileName = UUID().uuidString // (파일이름 생성)임의의 문자열(고유한 ID?)
+        print("fileName:", fileName)
+        let reference = Storage.storage().reference(withPath: "/profile/\(fileName)") // 프로필 이미지가 저장될 위치 설정(withPath: profile이라는 폴더내에 fileName으로 저장)
+        
+        do {
+            // try await 같이 사용(여기서 async를 비동기 처리하지 않고 상위로 넘길 것임 -> 감싸고 있는 메서드를 async 처리)
+            // 이미지를 업로드하고 metaData에 이미지가 올라간 정보에 대한 것이 저장됨
+            let metaData = try await reference.putDataAsync(imageData) // putDataAsync를 사용하여 이미지 업로드(async로 동작하는 함수이므로 동시성 환경을 만들어줘야하고 throws도 던지므로 에러 처리도 해줘야함)
+            print("metaData:", metaData)
+            // 이미지가 올라간 것을 게시글에 저장하는데 데이터는 Storage에 저장하고, 이미지가 올라간 URL만 게시글(uploadPost)에 저장할 것
+            let url = try await reference.downloadURL() // 다운로드 받는 URL 제공
+            
+            return url.absoluteString // 전체주소 URL 반환(String으로 변경해서)
+        } catch {
+            print("DEBUG: Failed to  upload image with error \(error.localizedDescription)")
+            return nil
         }
     }
     
