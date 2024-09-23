@@ -34,6 +34,7 @@
 		96B9B5BD2C98AE810064B11D /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B9B5BC2C98AE810064B11D /* ProfileViewModel.swift */; };
 		96E0CB452C85798800C270C3 /* NewPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E0CB442C85798800C270C3 /* NewPostView.swift */; };
 		96E3543A2C93F52200BE7906 /* SignupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E354392C93F52200BE7906 /* SignupViewModel.swift */; };
+		96E7CC942C9E929200A25394 /* ImageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E7CC932C9E929200A25394 /* ImageManager.swift */; };
 		96EECA662C91F10C00CD7AFF /* EnterPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96EECA652C91F10C00CD7AFF /* EnterPasswordView.swift */; };
 		96EECA682C91F3B900CD7AFF /* EnterNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96EECA672C91F3B900CD7AFF /* EnterNameView.swift */; };
 		96EECA6A2C91F4C000CD7AFF /* EnterUserNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96EECA692C91F4C000CD7AFF /* EnterUserNameView.swift */; };
@@ -65,6 +66,7 @@
 		96B9B5BC2C98AE810064B11D /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		96E0CB442C85798800C270C3 /* NewPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostView.swift; sourceTree = "<group>"; };
 		96E354392C93F52200BE7906 /* SignupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupViewModel.swift; sourceTree = "<group>"; };
+		96E7CC932C9E929200A25394 /* ImageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageManager.swift; sourceTree = "<group>"; };
 		96EECA652C91F10C00CD7AFF /* EnterPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterPasswordView.swift; sourceTree = "<group>"; };
 		96EECA672C91F3B900CD7AFF /* EnterNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterNameView.swift; sourceTree = "<group>"; };
 		96EECA692C91F4C000CD7AFF /* EnterUserNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterUserNameView.swift; sourceTree = "<group>"; };
@@ -180,6 +182,7 @@
 			isa = PBXGroup;
 			children = (
 				96B25FC72C94C15700FD3A18 /* AuthManager.swift */,
+				96E7CC932C9E929200A25394 /* ImageManager.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -334,6 +337,7 @@
 				96EECA662C91F10C00CD7AFF /* EnterPasswordView.swift in Sources */,
 				967133F22C8CBFF3008473BD /* Post.swift in Sources */,
 				9662A6852C8CC9F60076FF1D /* LoginView.swift in Sources */,
+				96E7CC942C9E929200A25394 /* ImageManager.swift in Sources */,
 				963A86512C8BA37900FD687D /* NewPostViewModel.swift in Sources */,
 				96B9B5B82C9879B20064B11D /* ProfileView.swift in Sources */,
 				960526F02C9787AA003B2A74 /* LoginViewModel.swift in Sources */,
