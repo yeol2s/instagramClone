@@ -16,7 +16,8 @@ struct MainTabView: View {
     
     var body: some View {
         TabView(selection: $tabIndex) { // 탭바 생성(tabIndex를 인자로 받아서 탭을 관리하기 위해 인자로 selection을 받음) -> 바인딩을 해줘야함 탭이 바뀔때 tabIndex가 해당 tag로 변경되어 받음
-            Text("Feed") // 탭바 눌렀을 때 나올 View
+            // 탭바 눌렀을 때 나올 View
+            FeedView()
                 .tabItem {
                     Image(systemName: "house")
                 }
