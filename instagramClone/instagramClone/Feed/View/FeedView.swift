@@ -27,9 +27,11 @@ struct FeedView: View {
                 } //:HSTACK
                 .padding(.horizontal)
                 
-                ForEach(viewModel.posts) { post in
-                    // 여기서 Post를 하위뷰(FeedCellView)로 넘겨줌
-                    FeedCellView(post: post) // 뷰모델로 부터 받은 Post 전달
+                LazyVStack { // Lazy하게(ForEach만 사용하면 Post 전체 로드됨 - 메모리 낭비 및 데이터 많을시 앱 버벅임)
+                    ForEach(viewModel.posts) { post in
+                        // 여기서 Post를 하위뷰(FeedCellView)로 넘겨줌
+                        FeedCellView(post: post) // 뷰모델로 부터 받은 Post 전달
+                    }
                 }
                 
                 Spacer()

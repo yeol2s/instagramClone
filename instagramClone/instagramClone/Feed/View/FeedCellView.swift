@@ -22,6 +22,7 @@ struct FeedCellView: View {
     }
     
     var body: some View {
+        let _ = print("image loading completed")
         VStack {
             KFImage(URL(string: viewModel.post.imageUrl))
                 .resizable()
