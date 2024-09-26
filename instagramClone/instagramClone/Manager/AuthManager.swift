@@ -18,8 +18,8 @@ class AuthManager {
     
     // Auth.auth().currentUser : 회원가입이나 로그인을 하면 currentUser에 로그인된 사용자값이 세팅된다.(이것으로 로그인이 됐는지 안됐는지 파악)
     // Auth.auth().currentUser으로 접근하는 것은 Firebase에서 제공하는 것이므로 자체로는 @State와 같은 상태감지 래퍼를 사용할 수 없음, @Observable을 적용 위해 이렇게 변수로 만듦
-    var currentAuthUser: FirebaseAuth.User?
-    var currentUser: User?
+    var currentAuthUser: FirebaseAuth.User? // Firebase Auth에서 가져온 이메일에 대한 정보
+    var currentUser: User? // 앱에서 만든 유저 데이터(유저네임, 네임 등 정보가 추가됨)
     
     private init() {
         // 앱을 다시켤때마다 이 싱글톤이 생성될 떄 currentUserSession은 항상 nil이 되므로 생성자에서 .auth()currentUser를 가져와서 할당한다.
@@ -77,15 +77,26 @@ class AuthManager {
         }
     }
     
-    // 유저정보 로드
+    // 유저정보 로드(현재 유저를 가져오고)
     // Auth에서 UID를 가져와서 Firebase Database에서 조회
     func loadUserData() async {
-        guard let userId = self.currentAuthUser?.uid else { return } // uid 가져오고
+        guard let userId = self.currentAuthUser?.uid else { return } // (현재 유저 기반으로)uid 가져오고
         do {
-            self.currentUser = try await Firestore.firestore().collection("users").document(userId).getDocument(as: User.self) // 저장된 userId기준으로 해당 유저만 가져옴(getDocument(as: Decodable.Type)으로 User타입으로 변형해서 가져옴
-            print("currentUser:", currentUser)
+            self.currentUser = try await Firestore.firestore().collection("users").document(userId).getDocument(as: User.self) // 저장된 userId기준으로 해당 유저만 가져옴(getDocument(as: Decodable.Type)으로 User타입으로 변형해서 가져옴 (*as없이 사용하면 그냥 딕셔너리 타입으로 가져올 수 있음)
         } catch {
             print("DEBUG: Failed to load user data with error \(error.localizedDescription)")
+        }
+    }
+    
+    // (오버로딩)유저정보 로드(해당 유저를 가져오고)
+    // userId 인자로 받아 uid기준으로 유저데이터를 로드(post작성된 user의 uid를 매칭하기 위해)
+    func loadUserData(userId: String) async -> User? {
+        do {
+            let user = try await Firestore.firestore().collection("users").document(userId).getDocument(as: User.self)
+            return user
+        } catch {
+            print("DEBUG: Failed to load user data with error \(error.localizedDescription)")
+            return nil
         }
     }
     
@@ -94,6 +105,7 @@ class AuthManager {
         do {
             try Auth.auth().signOut()
             currentAuthUser = nil
+            currentUser = nil // 로그아웃 후 기존 유저정보 삭제를 위해 currentUser까지
         } catch {
             print("DEBUG: Failed to sign out with error \(error.localizedDescription)")
         }

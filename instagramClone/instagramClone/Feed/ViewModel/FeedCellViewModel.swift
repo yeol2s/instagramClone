@@ -15,7 +15,15 @@ class FeedCellViewModel {
     
     init(post: Post) {
         self.post = post
+        Task {
+            await loadUserData() // FeedCellView가 생성될 때 post 내부에 user가 세팅되도록
+        }
     }
     
     
+    func loadUserData() async {
+        let userId = post.userId // userId 가져오고
+        guard let user = await AuthManager.shared.loadUserData(userId: userId) else { return }
+        post.user = user // post user에 값으로 userId 기준 유저데이터를 넣어줌(post의 유저 식별 위함)
+    }
 }

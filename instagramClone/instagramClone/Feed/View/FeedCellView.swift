@@ -30,7 +30,7 @@ struct FeedCellView: View {
                 .frame(maxWidth: .infinity)
                 .overlay(alignment: .top) { // 이미지 위에 사용자 아이콘, 햄버거메뉴를 올리기 위함(ZStack도 가능) overlay를 alignment top 설정(상단 배치)
                     HStack {
-                        Image("image_lion4")
+                        KFImage(URL(string: viewModel.post.user?.profileImageUrl ?? ""))
                             .resizable()
                             .frame(width: 35, height: 35)
                             .clipShape(Circle())
@@ -38,7 +38,7 @@ struct FeedCellView: View {
                                 Circle()
                                     .stroke(Color(red: 191/255, green: 11/255, blue: 180/255), lineWidth: 2) // 테두리
                             }
-                        Text("general.cat")
+                        Text("\(viewModel.post.user?.username ?? "")")
                             .foregroundStyle(.white)
                             .bold()
                         Spacer()
@@ -58,11 +58,11 @@ struct FeedCellView: View {
             } //:HSTACK
             .imageScale(.large) // 스택내 Image 전부 크기 조정
             .padding(.horizontal)
-            Text("좋아요 25,239개")
+            Text("좋아요 \(viewModel.post.like)개")
                 .font(.footnote)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal)
-            Text("general.cat" + " " + viewModel.post.caption) // 게시글 내용
+            Text("\(viewModel.post.user?.username ?? "")" + " " + viewModel.post.caption) // 게시글 내용
                 .font(.footnote)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal)
@@ -71,7 +71,7 @@ struct FeedCellView: View {
                 .font(.footnote)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal)
-            Text("3일 전")
+            Text("\(viewModel.post.date.relativeTimeString())")
                 .foregroundStyle(.gray)
                 .font(.footnote)
                 .frame(maxWidth: .infinity, alignment: .leading)
