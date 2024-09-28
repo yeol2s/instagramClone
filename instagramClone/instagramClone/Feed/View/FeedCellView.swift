@@ -22,7 +22,6 @@ struct FeedCellView: View {
     }
     
     var body: some View {
-        let _ = print("image loading completed")
         VStack {
             KFImage(URL(string: viewModel.post.imageUrl))
                 .resizable()
@@ -30,17 +29,25 @@ struct FeedCellView: View {
                 .frame(maxWidth: .infinity)
                 .overlay(alignment: .top) { // 이미지 위에 사용자 아이콘, 햄버거메뉴를 올리기 위함(ZStack도 가능) overlay를 alignment top 설정(상단 배치)
                     HStack {
-                        KFImage(URL(string: viewModel.post.user?.profileImageUrl ?? ""))
-                            .resizable()
-                            .frame(width: 35, height: 35)
-                            .clipShape(Circle())
-                            .overlay {
-                                Circle()
-                                    .stroke(Color(red: 191/255, green: 11/255, blue: 180/255), lineWidth: 2) // 테두리
+                        // 유저 정보를 클릭해서 대상의 프로필을 보기위해 NaviLink
+                        NavigationLink {
+                            if let user = viewModel.post.user {
+                                // ProfileViewModel()은 현재 로그인된 유저가 세팅되는 것이고, ProfileViewModel(user:)는 다른 유저의 프로필 정보를 세팅하기 위해 생성자 추가 정의
+                                ProfileView(viewModel: ProfileViewModel(user: user))
                             }
-                        Text("\(viewModel.post.user?.username ?? "")")
-                            .foregroundStyle(.white)
-                            .bold()
+                        } label: {
+                            KFImage(URL(string: viewModel.post.user?.profileImageUrl ?? ""))
+                                .resizable()
+                                .frame(width: 35, height: 35)
+                                .clipShape(Circle())
+                                .overlay {
+                                    Circle()
+                                        .stroke(Color(red: 191/255, green: 11/255, blue: 180/255), lineWidth: 2) // 테두리
+                                }
+                            Text("\(viewModel.post.user?.username ?? "")")
+                                .foregroundStyle(.white)
+                                .bold()
+                        }
                         Spacer()
                         Image(systemName: "line.3.horizontal")
                             .foregroundStyle(.white)

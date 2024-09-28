@@ -10,6 +10,7 @@ import Kingfisher // (캐싱을 사용하는 이미지 로드)라이브러리 *A
 
 struct ProfileView: View {
     @State var viewModel = ProfileViewModel() // 프로필뷰모델
+    @Environment(\.dismiss) var dismiss // 백버튼 구현 위함
     
     // Grid 설정정보(Columns) - 열을 어떻게 만들지(몇개의 열, 어떤방식)
     let columns: [GridItem] = [
@@ -95,7 +96,8 @@ struct ProfileView: View {
                         .font(.callout)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal)
-                    
+                    // 현재 프로필편집 뷰가 로그인한 유저 것이라면 -> 프로필 편집
+                    if viewModel.user?.isCurrentUser == true {
                     NavigationLink {
                         ProfileEditingView(viewModel: viewModel) // 프로필편집뷰
                     } label: {
@@ -108,6 +110,21 @@ struct ProfileView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                             .padding(.horizontal)
                             .padding(.top, 10)
+                    }
+                    } else { // 로그인한 유저가 아니라면 -> 팔로우
+                        Button {
+                            print("following")
+                        } label: {
+                            Text("팔로우")
+                                .bold()
+                                .foregroundStyle(.white)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 35)
+                                .background(.blue)
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                                .padding(.horizontal)
+                                .padding(.top, 10)
+                        }
                     }
                     Divider()
                         .padding()
@@ -133,6 +150,17 @@ struct ProfileView: View {
                 } //:VSTACK
             } //:SCROLL
         } //:NAVIGATION
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "arrow.backward")
+                        .tint(.black)
+                }
+            }
+        }
     }
 }
 

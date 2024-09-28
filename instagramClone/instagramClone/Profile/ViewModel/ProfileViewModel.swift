@@ -29,6 +29,7 @@ class ProfileViewModel {
     var profileImage: Image? // PhotosPicker item -> 이미지로 변경하여 저장할 변수
     var uiImage: UIImage? // 이미지 업로드를 위해 converImage 메서드에서 'data를 UIKit의 UIImage로 변경'하는 과정의 uiImage를 저장하기 위함
     
+    // 현재 로그인된 유저에 대한 정보를 담는 생성자
     init() {
         // MARK: let user에 할당 후 user(프로퍼티)를 초기화 시키는 이유는 이 생성자에서 바인딩을 위해 유저정보를 아래에서 프로퍼티에 초기화시키고 있는데 생성자내에서 (프로퍼티)user를 초기화시키면서 동시에 다른 프로퍼티(name, username, bio)에 (프로퍼티)user를 가져다 쓸 수 없다.(금지되어있음) 그래서 생성자내에서 (상수)user를 만들고 (프로퍼티)user를 초기화 시킴과 동시에 나머지 프로퍼티를 user로 초기화시킴
         // 생성자내에서 가장 가까운 (상수)user를 가져다가 프로퍼티들을 초기화시킨다. *(상수)user 이름을 변경해서 구분해도 되긴함(ex: tempUser)
@@ -40,6 +41,15 @@ class ProfileViewModel {
         self.username = user?.username ?? ""
         self.bio = user?.bio ?? ""
     }
+    
+    // (로그인 유저(Me)가 아닌)다른 사람의 프로필을 보기 위한 생성자
+    init(user: User) {
+        self.user = user
+        self.name = user.name
+        self.username = user.username
+        self.bio = user.bio ?? ""
+    }
+    
   
     // MARK: - 코드리펙토링 -> ImageManager로 이동
     // PhotosPicker item을 이미지로 변환해주는 메서드(이미지 장착하는 것) 프로필 사진 변경시 선택한 사진 뷰에 장착
