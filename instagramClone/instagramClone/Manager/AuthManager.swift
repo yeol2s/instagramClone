@@ -111,3 +111,82 @@ class AuthManager {
         }
     }
 }
+
+// (조금 다른 내용)구분위해 확장
+extension AuthManager {
+    
+    // (팔로우)팔로잉 할 대상 id가 인자로 들어와야 함
+    func follow(userId: String) async {
+        // 현재 로그인 되어있는 id 가져오고
+        guard let currentUserId = currentUser?.id else { return }
+        
+        do {
+            // MARK: async let
+            // (asnyc let 사용전에는)'following하는' await 작업이 먼저 끝나야 'follow 받는' await 함수가 (순차대로)실행되는데 async let _(리턴값이 없으므로 언더스코어 사용)을 사용하면 각각 (동시에)병렬적으로 비동기 실행이 된다.(결과는 나중에 받음)
+            // 두 작업이 순서가 필요없고 어떤 것이든 먼저 처리되도 상관없음
+            
+            // following 하는
+            async let _ = try await Firestore.firestore()
+                .collection("following") //following 컬렉션 만들고
+                .document(currentUserId) // 팔로잉이니까 로그인되어 있는 (Me)userId가 팔로잉할 대상을 적어줄 것(그래서 여기(document)는 현재 나의 userId가 입력되도록)
+                .collection("user-following") // 컬렉션을 추가로 만듦
+                .document(userId) // 누굴 팔로잉 하고 있는지 상대방 userId를 여기에 적을 것(인자로 받은 userId)
+                .setData([:]) // id만 있으면 되니 빈데이터 넣어줌
+            
+            // follow 받는
+            async let _ = try await Firestore.firestore()
+                .collection("follower")
+                .document(userId) // 인자로 들어온 userID가 팔로우 받고 있다는 것을 저장
+                .collection("user-follower")
+                .document(currentUserId) // (누구한테 팔로우 받고 있는지) (Me)userId한테 팔로우 받고 있다.
+                .setData([:])
+        } catch {
+            print("DEBUG: Failed to save follow data with error \(error.localizedDescription)")
+        }
+    }
+    
+    // 언팔로우
+    func unfollow(userId: String) async {
+        // 현재 로그인 되어있는 id 가져오고
+        guard let currentUserId = currentUser?.id else { return }
+        
+        do {
+            // Firestore DB 접근하는 것까지는 팔로우와 동일하고 setData 대신 delete 해주면 됨
+            async let _ = try await Firestore.firestore()
+                .collection("following")
+                .document(currentUserId)
+                .collection("user-following")
+                .document(userId)
+                .delete() // setData 대신 delete
+            
+            async let _ = try await Firestore.firestore()
+                .collection("follower")
+                .document(userId)
+                .collection("user-follower")
+                .document(currentUserId)
+                .delete()
+        } catch {
+            print("DEBUG: Failed to delete follow data with error \(error.localizedDescription)")
+        }
+    }
+    
+    // 현재 id가 상대방 id를 팔로우 하고 있는지 안하는지 체크
+    func checkFollow(userId: String) async -> Bool {
+        guard let currentUserId = currentUser?.id else { return false }
+        
+        do {
+            // Firestore DB에 접속해서 확인
+            let isFollowing = try await Firestore.firestore()
+                .collection("following")
+                .document(currentUserId)
+                .collection("user-following")
+                .document(userId)
+                .getDocument() // document를 가져오고(팔로우가 되었다면 해당 userId를 getDocumnet 가능하니까?
+                .exists // Bool 반환해줌(getDocumnet가 있는지 없는지 알려줌) -> 최종적으로 isFollowing 결과값이 변수에 담김
+            return isFollowing
+        } catch {
+            print("DEBUG: Failed to follow data with error \(error.localizedDescription)")
+            return false
+        }
+    }
+}
