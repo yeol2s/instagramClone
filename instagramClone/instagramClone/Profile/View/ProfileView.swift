@@ -112,15 +112,21 @@ struct ProfileView: View {
                             .padding(.top, 10)
                     }
                     } else { // 로그인한 유저가 아니라면 -> 팔로우
+                        // 여기서 팔로우, 언팔로우를 할 것이고 화면도 그에 맞게 바꿔야 할 것임
+                        let isFollowing = viewModel.user?.isFollowing ?? false
                         Button {
-                            print("following")
+                            if isFollowing {
+                                viewModel.unfollow()
+                            } else {
+                                viewModel.follow()
+                            }
                         } label: {
-                            Text("팔로우")
+                            Text(isFollowing ? "팔로잉" : "팔로우")
                                 .bold()
-                                .foregroundStyle(.white)
+                                .foregroundStyle(isFollowing ? .black : .white)
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 35)
-                                .background(.blue)
+                                .background(isFollowing ? .gray.opacity(0.4) : .blue)
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
                                 .padding(.horizontal)
                                 .padding(.top, 10)

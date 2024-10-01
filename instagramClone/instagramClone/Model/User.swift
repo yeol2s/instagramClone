@@ -8,13 +8,14 @@
 import Foundation
 import FirebaseAuth
 
-struct User: Codable {
+struct User: Codable, Identifiable { // Identifiable을 채택함으로써 id로 구분할 수 있게(ForEach에서)
     let id: String // 사용자 UID
     let email: String
     var username: String
     var name: String
     var bio: String? // 간단한 자기소개(회원가입때는 입력하지 않으므로 옵셔널)
     var profileImageUrl: String? // 프로필 이미지 주소(상동으로 옵셔널)
+    var isFollowing: Bool? // 현재 로그인한 유저가 이 유저를 팔로잉하고 있는지에 대한 여부
     
     // (계산속성) id가 현재 로그인된 id와 비교하여 현재 아이디인지 아닌지를 구분하여 반환(프로필 뷰에서 '프로필 편집' or '팔로우'를 결정하기 위함)
     var isCurrentUser: Bool {

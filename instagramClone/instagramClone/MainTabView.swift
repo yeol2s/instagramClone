@@ -22,7 +22,7 @@ struct MainTabView: View {
                     Image(systemName: "house")
                 }
                 .tag(0) // 각각의 탭들을 이름을 붙여주는 것(숫자)
-            Text("Search")
+            SearchView()
                 .tabItem {
                     Image(systemName: "magnifyingglass")
                 }

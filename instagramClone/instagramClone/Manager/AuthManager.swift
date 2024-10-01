@@ -79,7 +79,7 @@ class AuthManager {
     
     // 유저정보 로드(현재 유저를 가져오고)
     // Auth에서 UID를 가져와서 Firebase Database에서 조회
-    func loadUserData() async {
+    func loadUserData() async { // loadCurrentUserData()
         guard let userId = self.currentAuthUser?.uid else { return } // (현재 유저 기반으로)uid 가져오고
         do {
             self.currentUser = try await Firestore.firestore().collection("users").document(userId).getDocument(as: User.self) // 저장된 userId기준으로 해당 유저만 가져옴(getDocument(as: Decodable.Type)으로 User타입으로 변형해서 가져옴 (*as없이 사용하면 그냥 딕셔너리 타입으로 가져올 수 있음)
@@ -100,6 +100,21 @@ class AuthManager {
         }
     }
     
+    // (검색을 위한)모든 유저를 가져옴
+    func loadAllUserData() async -> [User]? {
+        do {
+            let documents = try await Firestore.firestore().collection("users").getDocuments().documents // users에 있는 모든 documents를 가져옴
+            
+            let users = try documents.compactMap { document in
+                return try document.data(as: User.self) // User 타입으로 변경 compactMap { try $0.document.data(as: User.self) }
+            }
+            return users
+        } catch {
+            print("DEBUG: Failed to load all user data with error \(error.localizedDescription)")
+            return nil
+        }
+    }
+    
     // 로그아웃
     func signout() {
         do {
@@ -116,9 +131,10 @@ class AuthManager {
 extension AuthManager {
     
     // (팔로우)팔로잉 할 대상 id가 인자로 들어와야 함
-    func follow(userId: String) async {
+    func follow(userId: String?) async {
         // 현재 로그인 되어있는 id 가져오고
         guard let currentUserId = currentUser?.id else { return }
+        guard let userId else { return } // 옵셔널 변수명과 바인딩 변수명이 동일하니 'userId =' 생략
         
         do {
             // MARK: async let
@@ -146,9 +162,10 @@ extension AuthManager {
     }
     
     // 언팔로우
-    func unfollow(userId: String) async {
+    func unfollow(userId: String?) async {
         // 현재 로그인 되어있는 id 가져오고
         guard let currentUserId = currentUser?.id else { return }
+        guard let userId else { return }
         
         do {
             // Firestore DB 접근하는 것까지는 팔로우와 동일하고 setData 대신 delete 해주면 됨
@@ -171,8 +188,9 @@ extension AuthManager {
     }
     
     // 현재 id가 상대방 id를 팔로우 하고 있는지 안하는지 체크
-    func checkFollow(userId: String) async -> Bool {
+    func checkFollow(userId: String?) async -> Bool {
         guard let currentUserId = currentUser?.id else { return false }
+        guard let userId else { return false }
         
         do {
             // Firestore DB에 접속해서 확인

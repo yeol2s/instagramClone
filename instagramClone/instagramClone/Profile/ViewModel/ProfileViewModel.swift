@@ -29,7 +29,7 @@ class ProfileViewModel {
     var profileImage: Image? // PhotosPicker item -> 이미지로 변경하여 저장할 변수
     var uiImage: UIImage? // 이미지 업로드를 위해 converImage 메서드에서 'data를 UIKit의 UIImage로 변경'하는 과정의 uiImage를 저장하기 위함
     
-    // 현재 로그인된 유저에 대한 정보를 담는 생성자
+    // MARK: 현재 로그인된 유저에 대한 정보를 담는 생성자 (현재 유저에 대한 화면)
     init() {
         // MARK: let user에 할당 후 user(프로퍼티)를 초기화 시키는 이유는 이 생성자에서 바인딩을 위해 유저정보를 아래에서 프로퍼티에 초기화시키고 있는데 생성자내에서 (프로퍼티)user를 초기화시키면서 동시에 다른 프로퍼티(name, username, bio)에 (프로퍼티)user를 가져다 쓸 수 없다.(금지되어있음) 그래서 생성자내에서 (상수)user를 만들고 (프로퍼티)user를 초기화 시킴과 동시에 나머지 프로퍼티를 user로 초기화시킴
         // 생성자내에서 가장 가까운 (상수)user를 가져다가 프로퍼티들을 초기화시킨다. *(상수)user 이름을 변경해서 구분해도 되긴함(ex: tempUser)
@@ -42,12 +42,14 @@ class ProfileViewModel {
         self.bio = user?.bio ?? ""
     }
     
-    // (로그인 유저(Me)가 아닌)다른 사람의 프로필을 보기 위한 생성자
+    // MARK: (로그인 유저(Me)가 아닌)다른 사람의 프로필을 보기 위한 생성자 (다른 유저에 대한 화면)
     init(user: User) {
         self.user = user
         self.name = user.name
         self.username = user.username
         self.bio = user.bio ?? ""
+        
+        checkFollow() // 팔로우되어있는지 체크
     }
     
   
@@ -172,6 +174,35 @@ class ProfileViewModel {
             self.posts = posts // 변형한 post 배열을 전달
         } catch {
             print("DEBUG: Failed to load user posts with error \(error.localizedDescription)")
+        }
+    }
+}
+
+// 구분을 위한 확장
+extension ProfileViewModel {
+    // MARK: 프로필뷰모델이 생성자에 따라 다른 유저 정보를 가지고 있는 뷰모델을 생성하므로 그에 대한 user 정보가 들어있을 것(그래서 상대 id가 인자값으로 사용 가능한 것인듯)
+    // 팔로우
+    func follow() {
+        Task {
+            await AuthManager.shared.follow(userId: user?.id) // 팔로우
+            user?.isFollowing = true // "내가 이 유저를 팔로우 했다."라는 정보를 로컬에 저장
+        }
+    }
+    
+    // 언팔로우
+    func unfollow() {
+        Task {
+            await AuthManager.shared.unfollow(userId: user?.id)
+            user?.isFollowing = false
+        }
+    }
+    
+    // 현재 id가 (현재)프로필에 있는 id를 팔로우 하고 있는지 여부
+    func checkFollow() {
+        Task {
+            // 팔로잉 여부를 isFollowing 변수에 저장
+            // 팔로잉의 여부를 여기서 확인(앱 첫 구동시와 같은 상황에 로컬에 정보를 저장시키는 것)(뷰모델이 생성될 때 체크)
+            self.user?.isFollowing = await AuthManager.shared.checkFollow(userId: user?.id) // 이 아이디를 팔로잉하고있니? -> Bool 반환
         }
     }
 }

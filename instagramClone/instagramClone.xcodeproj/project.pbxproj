@@ -30,6 +30,8 @@
 		967F50822CA1F63D0017599E /* FeedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967F50812CA1F63D0017599E /* FeedViewModel.swift */; };
 		968D7EE72C9164210033E825 /* GradientBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 968D7EE62C9164210033E825 /* GradientBackgroundView.swift */; };
 		968D7EE92C9166430033E825 /* EnterEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 968D7EE82C9166430033E825 /* EnterEmailView.swift */; };
+		96945E102CAA648E002EB1A7 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96945E0F2CAA648E002EB1A7 /* SearchView.swift */; };
+		96945E122CAA6548002EB1A7 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96945E112CAA6548002EB1A7 /* SearchViewModel.swift */; };
 		96ABAADC2CA5045E0090B005 /* Date+relativeTimeString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96ABAADB2CA5045E0090B005 /* Date+relativeTimeString.swift */; };
 		96B25FC82C94C15700FD3A18 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B25FC72C94C15700FD3A18 /* AuthManager.swift */; };
 		96B9B5B82C9879B20064B11D /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B9B5B72C9879B20064B11D /* ProfileView.swift */; };
@@ -67,6 +69,8 @@
 		967F50812CA1F63D0017599E /* FeedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewModel.swift; sourceTree = "<group>"; };
 		968D7EE62C9164210033E825 /* GradientBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientBackgroundView.swift; sourceTree = "<group>"; };
 		968D7EE82C9166430033E825 /* EnterEmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterEmailView.swift; sourceTree = "<group>"; };
+		96945E0F2CAA648E002EB1A7 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		96945E112CAA6548002EB1A7 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
 		96ABAADB2CA5045E0090B005 /* Date+relativeTimeString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+relativeTimeString.swift"; sourceTree = "<group>"; };
 		96B25FC72C94C15700FD3A18 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		96B9B5B72C9879B20064B11D /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -144,6 +148,7 @@
 				96B25FC62C94C12900FD3A18 /* Manager */,
 				9662A6862C8CCA260076FF1D /* Login */,
 				96CB32142CA1379E00498BEB /* Feed */,
+				96945E0E2CAA6451002EB1A7 /* Search */,
 				963A864F2C8BA35C00FD687D /* NewPost */,
 				96B9B5B92C9879C50064B11D /* Profile */,
 				967133F02C8CBFD3008473BD /* Model */,
@@ -206,6 +211,15 @@
 				96CB32152CA1390D00498BEB /* FeedCellView.swift */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		96945E0E2CAA6451002EB1A7 /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				96945E0F2CAA648E002EB1A7 /* SearchView.swift */,
+				96945E112CAA6548002EB1A7 /* SearchViewModel.swift */,
+			);
+			path = Search;
 			sourceTree = "<group>";
 		};
 		96ABAADA2CA504020090B005 /* Extensions */ = {
@@ -378,8 +392,10 @@
 				96B9B5BB2C98A8D50064B11D /* ProfileEditingView.swift in Sources */,
 				9653C1792C8386A700445EFF /* MainTabView.swift in Sources */,
 				967F50822CA1F63D0017599E /* FeedViewModel.swift in Sources */,
+				96945E102CAA648E002EB1A7 /* SearchView.swift in Sources */,
 				968D7EE92C9166430033E825 /* EnterEmailView.swift in Sources */,
 				962B0CFA2CA2711900D10585 /* FeedCellViewModel.swift in Sources */,
+				96945E122CAA6548002EB1A7 /* SearchViewModel.swift in Sources */,
 				96CB32162CA1390D00498BEB /* FeedCellView.swift in Sources */,
 				96EECA6C2C91F58B00CD7AFF /* CompleteSignupView.swift in Sources */,
 				9611158C2C92A0740074EF91 /* InstagramTextFieldModifier.swift in Sources */,
