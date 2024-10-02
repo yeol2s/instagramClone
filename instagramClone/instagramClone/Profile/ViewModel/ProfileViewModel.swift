@@ -52,23 +52,23 @@ class ProfileViewModel {
         checkFollow() // 팔로우되어있는지 체크
     }
     
-  
+    
     // MARK: - 코드리펙토링 -> ImageManager로 이동
     // PhotosPicker item을 이미지로 변환해주는 메서드(이미지 장착하는 것) 프로필 사진 변경시 선택한 사진 뷰에 장착
     func convertImage(item: PhotosPickerItem?) async {
         // MARK: (Old) ImageManger 리팩토링 전
-//        guard let item = item else { return }
-//        // MARK: Data -> Image로 바로 변환이 안되므로 Data -> UIImage -> Image로 변환
-//        // * 과정 : PhotosPikcerItem -> Data(바이너리) -> UIImage(UIKit) -> Image(SwiftUI)
-//        // 1. loadTransferable : PhotosPicker item을 Data 형식(바이너리-0,1)으로 변경
-//        // 여기서 await을 비동기 처리 하지 않은 이유는 위 메서드에서 async를 사용하므로써 상위로 넘겨준 것
-//        guard let data = try? await item.loadTransferable(type: Data.self) else { return }
-//        // 2. data를 UIKit의 UIImage로 변경
-//        guard let uiImage = UIImage(data: data) else { return }
-//        // 3. SwiftUI Image 형식으로 변경
-//        self.profileImage = Image(uiImage: uiImage)
-//        // (uploadPost시)이미지 업로드 인자값으로 사용하기 위함
-//        self.uiImage = uiImage
+        //        guard let item = item else { return }
+        //        // MARK: Data -> Image로 바로 변환이 안되므로 Data -> UIImage -> Image로 변환
+        //        // * 과정 : PhotosPikcerItem -> Data(바이너리) -> UIImage(UIKit) -> Image(SwiftUI)
+        //        // 1. loadTransferable : PhotosPicker item을 Data 형식(바이너리-0,1)으로 변경
+        //        // 여기서 await을 비동기 처리 하지 않은 이유는 위 메서드에서 async를 사용하므로써 상위로 넘겨준 것
+        //        guard let data = try? await item.loadTransferable(type: Data.self) else { return }
+        //        // 2. data를 UIKit의 UIImage로 변경
+        //        guard let uiImage = UIImage(data: data) else { return }
+        //        // 3. SwiftUI Image 형식으로 변경
+        //        self.profileImage = Image(uiImage: uiImage)
+        //        // (uploadPost시)이미지 업로드 인자값으로 사용하기 위함
+        //        self.uiImage = uiImage
         // MARK: (New) ImageManager 리팩토링 후
         guard let imageSelection = await ImageManager.convertImage(item: item) else { return }// 타입메서드 호출
         self.profileImage = imageSelection.image
@@ -133,48 +133,57 @@ class ProfileViewModel {
     }
     
     // MARK: - (Old)코드 리팩토링 전(ImageManager에서 리팩토링)
-//    // 프로필 사진 업로드(서버로 사진 업로드)
-//    func uploadImage(uiImage: UIImage) async -> String? { // (반환) -> 사진을 올린 주소
-//        // jpegData를 사용하면 파일이 jpeg로 압축됨
-//        guard let imageData = uiImage.jpegData(compressionQuality: 0.5) else { return nil }
-//        let fileName = UUID().uuidString // (파일이름 생성)임의의 문자열(고유한 ID?)
-//        print("fileName:", fileName)
-//        let reference = Storage.storage().reference(withPath: "/profile/\(fileName)") // 프로필 이미지가 저장될 위치 설정(withPath: profile이라는 폴더내에 fileName으로 저장)
-//        
-//        do {
-//            // try await 같이 사용(여기서 async를 비동기 처리하지 않고 상위로 넘길 것임 -> 감싸고 있는 메서드를 async 처리)
-//            // 이미지를 업로드하고 metaData에 이미지가 올라간 정보에 대한 것이 저장됨
-//            let metaData = try await reference.putDataAsync(imageData) // putDataAsync를 사용하여 이미지 업로드(async로 동작하는 함수이므로 동시성 환경을 만들어줘야하고 throws도 던지므로 에러 처리도 해줘야함)
-//            print("metaData:", metaData)
-//            // 이미지가 올라간 것을 게시글에 저장하는데 데이터는 Storage에 저장하고, 이미지가 올라간 URL만 게시글(uploadPost)에 저장할 것
-//            let url = try await reference.downloadURL() // 다운로드 받는 URL 제공
-//            
-//            return url.absoluteString // 전체주소 URL 반환(String으로 변경해서)
-//        } catch {
-//            print("DEBUG: Failed to  upload image with error \(error.localizedDescription)")
-//            return nil
-//        }
-//    }
+    //    // 프로필 사진 업로드(서버로 사진 업로드)
+    //    func uploadImage(uiImage: UIImage) async -> String? { // (반환) -> 사진을 올린 주소
+    //        // jpegData를 사용하면 파일이 jpeg로 압축됨
+    //        guard let imageData = uiImage.jpegData(compressionQuality: 0.5) else { return nil }
+    //        let fileName = UUID().uuidString // (파일이름 생성)임의의 문자열(고유한 ID?)
+    //        print("fileName:", fileName)
+    //        let reference = Storage.storage().reference(withPath: "/profile/\(fileName)") // 프로필 이미지가 저장될 위치 설정(withPath: profile이라는 폴더내에 fileName으로 저장)
+    //
+    //        do {
+    //            // try await 같이 사용(여기서 async를 비동기 처리하지 않고 상위로 넘길 것임 -> 감싸고 있는 메서드를 async 처리)
+    //            // 이미지를 업로드하고 metaData에 이미지가 올라간 정보에 대한 것이 저장됨
+    //            let metaData = try await reference.putDataAsync(imageData) // putDataAsync를 사용하여 이미지 업로드(async로 동작하는 함수이므로 동시성 환경을 만들어줘야하고 throws도 던지므로 에러 처리도 해줘야함)
+    //            print("metaData:", metaData)
+    //            // 이미지가 올라간 것을 게시글에 저장하는데 데이터는 Storage에 저장하고, 이미지가 올라간 URL만 게시글(uploadPost)에 저장할 것
+    //            let url = try await reference.downloadURL() // 다운로드 받는 URL 제공
+    //
+    //            return url.absoluteString // 전체주소 URL 반환(String으로 변경해서)
+    //        } catch {
+    //            print("DEBUG: Failed to  upload image with error \(error.localizedDescription)")
+    //            return nil
+    //        }
+    //    }
     
     // Posts 데이터들 가져오기
+    // MARK: (Old) PostManager로 이동(리팩토링)
+    //    func loadUserPosts() async {
+    //        // Document중에서 userId가 현재 Id와 같은 것들을 가져와야 하므로 whereField(field: isEqualTo:)사용(isEqualTo: userId 필드가 (프로퍼티)user?.id와 같은지 체크)
+    //        // .order(by: date필드, descending: 내림차순-true) 로 포스트 정렬
+    //        do {
+    //            let documents = try await Firestore.firestore().collection("posts").order(by: "date", descending: true)
+    //                .whereField("userId", isEqualTo: user?.id ?? "").getDocuments().documents
+    //
+    //            // post를 임시저장
+    //            var posts: [Post] = []
+    //            // documents에 있는 데이터들을 Post 타입으로 변환하기 위한 루프
+    //            for document in documents {
+    //                let post = try document.data(as: Post.self) // Post 타입으로 변경해서 post에 담음(as: 원하는 타입)
+    //                posts.append(post)
+    //            }
+    //            self.posts = posts // 변형한 post 배열을 전달
+    //        } catch {
+    //            print("DEBUG: Failed to load user posts with error \(error.localizedDescription)")
+    //        }
+    //    }
+    
+    // (New)Posts 데이터들 가져오기
     func loadUserPosts() async {
-        // Document중에서 userId가 현재 Id와 같은 것들을 가져와야 하므로 whereField(field: isEqualTo:)사용(isEqualTo: userId 필드가 (프로퍼티)user?.id와 같은지 체크)
-        // .order(by: date필드, descending: 내림차순-true) 로 포스트 정렬
-        do {
-            let documents = try await Firestore.firestore().collection("posts").order(by: "date", descending: true)
-                .whereField("userId", isEqualTo: user?.id ?? "").getDocuments().documents
-            
-            // post를 임시저장
-            var posts: [Post] = []
-            // documents에 있는 데이터들을 Post 타입으로 변환하기 위한 루프
-            for document in documents {
-                let post = try document.data(as: Post.self) // Post 타입으로 변경해서 post에 담음(as: 원하는 타입)
-                posts.append(post)
-            }
-            self.posts = posts // 변형한 post 배열을 전달
-        } catch {
-            print("DEBUG: Failed to load user posts with error \(error.localizedDescription)")
-        }
+        guard let userId = user?.id else { return }
+        guard let posts = await PostManager.loadUserPosts(userId: userId) else { return }
+        
+        self.posts = posts
     }
 }
 

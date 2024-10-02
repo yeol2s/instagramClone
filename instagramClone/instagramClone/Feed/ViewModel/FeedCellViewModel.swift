@@ -20,7 +20,6 @@ class FeedCellViewModel {
         }
     }
     
-    
     func loadUserData() async {
         let userId = post.userId // userId 가져오고
         guard let user = await AuthManager.shared.loadUserData(userId: userId) else { return }

@@ -142,6 +142,7 @@ extension AuthManager {
             // 두 작업이 순서가 필요없고 어떤 것이든 먼저 처리되도 상관없음
             
             // following 하는
+            // 현재 아이디가 -> 누구를 팔로잉 하는지
             async let _ = try await Firestore.firestore()
                 .collection("following") //following 컬렉션 만들고
                 .document(currentUserId) // 팔로잉이니까 로그인되어 있는 (Me)userId가 팔로잉할 대상을 적어줄 것(그래서 여기(document)는 현재 나의 userId가 입력되도록)
@@ -150,6 +151,7 @@ extension AuthManager {
                 .setData([:]) // id만 있으면 되니 빈데이터 넣어줌
             
             // follow 받는
+            // 팔로잉 하는 대상이 -> 누구들이 팔로잉 하는지
             async let _ = try await Firestore.firestore()
                 .collection("follower")
                 .document(userId) // 인자로 들어온 userID가 팔로우 받고 있다는 것을 저장
