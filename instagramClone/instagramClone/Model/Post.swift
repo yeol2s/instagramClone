@@ -15,6 +15,7 @@ struct Post: Codable, Identifiable { // (Encodable)Firebase에 보내기도 해�
     var like: Int // 좋아요에 대한 숫자를 저장
     let imageUrl: String // 이미지에 대한 정보
     let date: Date // 시간 저장
+    var isLike: Bool? // '좋아요'(서버에서 가져오는 데이터들을 항상 가져오기보다 로컬에서 처리할 수 있도록)
     
     // 유저에 대한 정보 가져오기 위한 user 변수(Firebase에서 userId 기반으로 post를 올린 유저를 식별해서 저장하기 위함)
     var user: User? // 옵셔널인 이유는 처음 Firebase의 posts랑 통신할 때는 해당 정보를 제외하기 때문(나중에 유저정보를 가져와서 채움)

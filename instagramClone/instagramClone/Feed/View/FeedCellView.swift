@@ -57,7 +57,17 @@ struct FeedCellView: View {
                 }
             
             HStack {
-                Image(systemName: "heart")
+                // '좋아요' 기능
+                let isLike = viewModel.post.isLike ?? false
+                Button {
+                    Task {
+                        // if문 대신 삼항연산자로 구현
+                        isLike ? await viewModel.unlike() : await viewModel.like()
+                    }
+                } label: {
+                    Image(systemName: isLike ? "heart.fill" : "heart")
+                        .foregroundStyle(isLike ? .red : .primary)
+                }
                 Image(systemName: "bubble.right")
                 Image(systemName: "paperplane")
                 Spacer()
