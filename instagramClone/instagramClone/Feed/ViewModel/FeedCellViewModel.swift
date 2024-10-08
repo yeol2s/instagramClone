@@ -12,12 +12,14 @@ import Foundation
 @Observable
 class FeedCellViewModel {
     var post: Post // 상위 뷰모델로부터 전달받은 Post를 여기에 장착(FeedView에서 넘겨받음)
+    var commentCount = 0 // 댓글 개수를 저장할 변수
     
     init(post: Post) {
         self.post = post
         Task {
             await loadUserData() // FeedCellView가 생성될 때 post 내부에 user가 세팅되도록
             await checkLike() // '좋아요' 체크
+            await loadCommentCount() // 댓글 개수 체크
         }
     }
     
@@ -49,4 +51,10 @@ extension FeedCellViewModel {
     }
 }
 
+// 댓글 개수 기능 확장
+extension FeedCellViewModel {
+    func loadCommentCount() async {
+        self.commentCount = await CommentManager.loadCommentCount(postId: post.id)
+    }
+}
 

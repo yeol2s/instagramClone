@@ -4,7 +4,7 @@
 //
 //  Created by 유성열 on 9/16/24.
 //
-// MARK: - 유저 모델(데이터 전달-인코딩)
+// MARK: - User Model(데이터 전달-인코딩)
 import Foundation
 import FirebaseAuth
 
@@ -29,4 +29,9 @@ struct User: Codable, Identifiable { // Identifiable을 채택함으로써 id로
         // 실제 앱 단위에서 로그인된 환경과 파이어베이스 서버에 접속되어 있는 상태의 id를 비교하는 것?
         return id == currentUserId // 간단하게(현재 로그인되어 있는 id와 바인딩된 id비교하여 -> Bool)
     }
+}
+
+// 더미 유저
+extension User {
+    static var DUMMY_USER: User = User(id: UUID().uuidString, email: "dummy@gmail.com", username: "dummy", name: "dummy")
 }

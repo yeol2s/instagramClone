@@ -15,6 +15,7 @@ struct FeedCellView: View {
     // let post: Post
     
     @State var viewModel: FeedCellViewModel
+    @State var isCommentShowing = false // (상태)Bool값에 따라 댓글창 띄울지 결정
     
     // View 생성자로 ViewModel을 받는게 아닌 Post를 받음(넘겨받는건 Post 알맹이다! 뷰모델은 내가만든다)
     init(post: Post) {
@@ -68,7 +69,13 @@ struct FeedCellView: View {
                     Image(systemName: isLike ? "heart.fill" : "heart")
                         .foregroundStyle(isLike ? .red : .primary)
                 }
-                Image(systemName: "bubble.right")
+                // 댓글 아이콘
+                Button {
+                    isCommentShowing = true
+                } label: {
+                    Image(systemName: "bubble.right")
+                }
+                .tint(.black) // 최상위뷰에서 틴트가 블랙으로 설정되어있으므로 생략가능
                 Image(systemName: "paperplane")
                 Spacer()
                 Image(systemName: "bookmark")
@@ -83,11 +90,16 @@ struct FeedCellView: View {
                 .font(.footnote)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal)
-            Text("댓글 25개 더보기")
-                .foregroundStyle(.gray)
-                .font(.footnote)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal)
+            // 댓글(더보기)
+            Button {
+                isCommentShowing = true
+            } label: {
+                Text("댓글 \(viewModel.commentCount)개 더보기")
+                    .foregroundStyle(.gray)
+                    .font(.footnote)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal)
+            }
             Text("\(viewModel.post.date.relativeTimeString())")
                 .foregroundStyle(.gray)
                 .font(.footnote)
@@ -95,6 +107,20 @@ struct FeedCellView: View {
                 .padding(.horizontal)
         } //:VSTACK
         .padding(.bottom) // FeedView에서 셀간 간격을 위해 하단에 패딩
+        // (isCommentShowing 값에 따라)sheet으로 댓글창 띄움
+        .sheet(isPresented: $isCommentShowing, content: {
+            CommentView(post: viewModel.post) // 뷰모델 내부의 post를 전달
+                .presentationDragIndicator(.visible) // 드래그 힌트바 보이게
+        })
+        // 댓글 올렸다가 내릴때 감지되도록 해서 댓글 카운트가 다시 로드되도록
+        .onChange(of: isCommentShowing) { oldValue, newValue in
+            // 댓글창이 열렸다가 닫힐때(isCommentShowing이 true->false 바뀔 때)
+            if newValue == false {
+                Task {
+                    await viewModel.loadCommentCount()
+                }
+            }
+        }
     }
 }
 

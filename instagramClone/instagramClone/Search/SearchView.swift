@@ -40,6 +40,7 @@ struct SearchView: View {
              }
              */
             //(New) ForEach 대신 바로 List로 루프를 돌릴 수 있다.(똑같은 코드임)
+            // (List가 다시 그려지는 과정) searchText가 @State 선언되어 있으므로 변경을 감지하고 뷰를 다시 그리도록하는데 filteredUsers(계산속성)는 매번 새로운 값으로 계산(filteredUsers가 searchText에 의존하여 상태를 직접 감시하지 않아도 SwiftUI 상태 관리 메커니즘에 따라 리스트가 자동으로 업데이트 됨)
             List(filteredUsers) { user in
                 NavigationLink {
                     // ProfileViewModel user를 인자로넣어 생성

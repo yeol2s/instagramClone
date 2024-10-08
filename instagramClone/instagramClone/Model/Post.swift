@@ -4,7 +4,7 @@
 //
 //  Created by 유성열 on 9/8/24.
 //
-// MARK: - (Post)Model(게시글 정보에대한 모델)
+// MARK: - Post Model(게시글 정보에대한 모델)
 import Foundation
 
 // id로 식별할 수 있도록 Identifiable 프로토콜 채택
@@ -19,4 +19,9 @@ struct Post: Codable, Identifiable { // (Encodable)Firebase에 보내기도 해�
     
     // 유저에 대한 정보 가져오기 위한 user 변수(Firebase에서 userId 기반으로 post를 올린 유저를 식별해서 저장하기 위함)
     var user: User? // 옵셔널인 이유는 처음 Firebase의 posts랑 통신할 때는 해당 정보를 제외하기 때문(나중에 유저정보를 가져와서 채움)
+}
+
+// 더미 포스트
+extension Post {
+    static var DUMMY_POST: Post = Post(id: UUID().uuidString, userId: UUID().uuidString, caption: "test caption", like: 125, imageUrl: "https://firebasestorage.googleapis.com:443/v0/b/instagramclone-c957d.appspot.com/o/images%2F75793E6D-3FCC-4351-BDD1-E5A2AF90CC46?alt=media&token=25d723d2-00d3-4809-a8e7-a1b7160f9d70", date: Date())
 }
