@@ -29,6 +29,18 @@ class ProfileViewModel {
     var profileImage: Image? // PhotosPicker item -> 이미지로 변경하여 저장할 변수
     var uiImage: UIImage? // 이미지 업로드를 위해 converImage 메서드에서 'data를 UIKit의 UIImage로 변경'하는 과정의 uiImage를 저장하기 위함
     
+    // 밖에서(뷰에 (간단하게)쓰기 쉽도록 user의 userCountInfo를 밖으로 꺼내는 작업(계산 속성)
+    var postCount: Int? {
+        user?.userCountInfo?.postCount
+    }
+    var followingCount: Int? {
+        user?.userCountInfo?.followingCount
+    }
+    var followerCount: Int? {
+        user?.userCountInfo?.followerCount
+    }
+    
+    
     // MARK: 현재 로그인된 유저에 대한 정보를 담는 생성자 (현재 유저에 대한 화면)
     init() {
         // MARK: let user에 할당 후 user(프로퍼티)를 초기화 시키는 이유는 이 생성자에서 바인딩을 위해 유저정보를 아래에서 프로퍼티에 초기화시키고 있는데 생성자내에서 (프로퍼티)user를 초기화시키면서 동시에 다른 프로퍼티(name, username, bio)에 (프로퍼티)user를 가져다 쓸 수 없다.(금지되어있음) 그래서 생성자내에서 (상수)user를 만들고 (프로퍼티)user를 초기화 시킴과 동시에 나머지 프로퍼티를 user로 초기화시킴
@@ -40,6 +52,9 @@ class ProfileViewModel {
         self.name = user?.name ?? ""
         self.username = user?.username ?? ""
         self.bio = user?.bio ?? ""
+        Task {
+            await loadUserCountInfo() // 게시물, 팔로워, 팔로잉 수 로드
+        }
     }
     
     // MARK: (로그인 유저(Me)가 아닌)다른 사람의 프로필을 보기 위한 생성자 (다른 유저에 대한 화면)
@@ -49,7 +64,10 @@ class ProfileViewModel {
         self.username = user.username
         self.bio = user.bio ?? ""
         
-        checkFollow() // 팔로우되어있는지 체크
+        Task {
+            await checkFollow() // 팔로우되어있는지 체크
+            await loadUserCountInfo() // 게시물, 팔로워, 팔로잉 수 로드
+        }
     }
     
     
@@ -195,6 +213,7 @@ extension ProfileViewModel {
         Task {
             await AuthManager.shared.follow(userId: user?.id) // 팔로우
             user?.isFollowing = true // "내가 이 유저를 팔로우 했다."라는 정보를 로컬에 저장
+            await loadUserCountInfo() // 팔로우 버튼 눌렀을 때 (게시물, 팔로워, 팔로잉 수 로드)
         }
     }
     
@@ -203,15 +222,21 @@ extension ProfileViewModel {
         Task {
             await AuthManager.shared.unfollow(userId: user?.id)
             user?.isFollowing = false
+            await loadUserCountInfo() // 언팔로우 버튼 눌렀을 때 (게시물, 팔로워, 팔로잉 수 로드)
         }
     }
     
     // 현재 id가 (현재)프로필에 있는 id를 팔로우 하고 있는지 여부
-    func checkFollow() {
-        Task {
+    func checkFollow() async { // 상위로 async(loadUserCountInfo와 같이 묶어서 비동기처리함)
             // 팔로잉 여부를 isFollowing 변수에 저장
             // 팔로잉의 여부를 여기서 확인(앱 첫 구동시와 같은 상황에 로컬에 정보를 저장시키는 것)(뷰모델이 생성될 때 체크)
             self.user?.isFollowing = await AuthManager.shared.checkFollow(userId: user?.id) // 이 아이디를 팔로잉하고있니? -> Bool 반환
-        }
+    }
+}
+
+// 게시물, 팔로우, 팔로잉 수 로드
+extension ProfileViewModel {
+    func loadUserCountInfo() async {
+        self.user?.userCountInfo = await UserCountManager.loadUserCountInfo(userId: user?.id)
     }
 }

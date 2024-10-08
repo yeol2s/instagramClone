@@ -67,19 +67,19 @@ struct ProfileView: View {
                                 .padding(.bottom, 10)
                         }
                         VStack {
-                            Text("124")
+                            Text("\(viewModel.postCount ?? 0)")
                                 .fontWeight(.semibold)
                             Text("게시물")
                         } //:VSTACK
                         .frame(maxWidth: .infinity)
                         VStack {
-                            Text("999")
+                            Text("\(viewModel.followerCount ?? 0)")
                                 .fontWeight(.semibold)
                             Text("팔로워")
                         } //:VSTACK
                         .frame(maxWidth: .infinity)
                         VStack {
-                            Text("1403")
+                            Text("\(viewModel.followingCount ?? 0)")
                                 .fontWeight(.semibold)
                             Text("팔로잉")
                         } //:VSTACK
@@ -156,6 +156,12 @@ struct ProfileView: View {
                 } //:VSTACK
             } //:SCROLL
         } //:NAVIGATION
+        .task { // 뷰가 나타날 때 비동기적으로 동작
+            await viewModel.loadUserCountInfo() // (게시물, 팔로워, 팔로잉)카운트 로드
+        }
+        .refreshable { // (스와이프)드래그로 쭉 잡아당겼을 때
+            await viewModel.loadUserCountInfo()
+        }
         .navigationBarBackButtonHidden()
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {

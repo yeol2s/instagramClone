@@ -17,6 +17,9 @@ struct User: Codable, Identifiable { // Identifiable을 채택함으로써 id로
     var profileImageUrl: String? // 프로필 이미지 주소(상동으로 옵셔널)
     var isFollowing: Bool? // 현재 로그인한 유저가 이 유저를 팔로잉하고 있는지에 대한 여부(서버에서 가져오는 데이터들을 항상 가져오기보다 로컬에서 처리할 수 있도록)
     
+    // 게시글, 팔로워, 팔로잉 수 저장할 변수
+    var userCountInfo: UserCountInfo? // UserCountInfo는 우리가 직접 만든 타입이므로 Codable 프로토콜을 채택해야 사용할 수 있다.
+    
     // (계산속성) id가 현재 로그인된 id와 비교하여 현재 아이디인지 아닌지를 구분하여 반환(프로필 뷰에서 '프로필 편집' or '팔로우'를 결정하기 위함)
     var isCurrentUser: Bool {
         //guard let currentUserId = Auth.auth().currentUser?.uid else { return false }

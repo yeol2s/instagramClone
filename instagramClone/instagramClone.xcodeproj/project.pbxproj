@@ -20,6 +20,7 @@
 		963A864C2C8B932600FD687D /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 963A864B2C8B932600FD687D /* FirebaseFirestore */; };
 		963A864E2C8B932600FD687D /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 963A864D2C8B932600FD687D /* FirebaseStorage */; };
 		963A86512C8BA37900FD687D /* NewPostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963A86502C8BA37900FD687D /* NewPostViewModel.swift */; };
+		96403B122CB59B21007B9723 /* UserCountManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96403B112CB59B20007B9723 /* UserCountManager.swift */; };
 		9653C1692C83856000445EFF /* instagramCloneApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9653C1682C83856000445EFF /* instagramCloneApp.swift */; };
 		9653C16B2C83856000445EFF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9653C16A2C83856000445EFF /* ContentView.swift */; };
 		9653C16D2C83856100445EFF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9653C16C2C83856100445EFF /* Assets.xcassets */; };
@@ -64,6 +65,7 @@
 		9630D6332CAC4E05002EDEB7 /* PostManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostManager.swift; sourceTree = "<group>"; };
 		963A86462C8B87EC00FD687D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		963A86502C8BA37900FD687D /* NewPostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostViewModel.swift; sourceTree = "<group>"; };
+		96403B112CB59B20007B9723 /* UserCountManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCountManager.swift; sourceTree = "<group>"; };
 		9653C1652C83856000445EFF /* instagramClone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = instagramClone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9653C1682C83856000445EFF /* instagramCloneApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = instagramCloneApp.swift; sourceTree = "<group>"; };
 		9653C16A2C83856000445EFF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -277,6 +279,7 @@
 				96E7CC932C9E929200A25394 /* ImageManager.swift */,
 				9630D6332CAC4E05002EDEB7 /* PostManager.swift */,
 				9665A6FB2CB1A2A5002BF0FD /* CommentManager.swift */,
+				96403B112CB59B20007B9723 /* UserCountManager.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -445,6 +448,7 @@
 				96945E122CAA6548002EB1A7 /* SearchViewModel.swift in Sources */,
 				96CB32162CA1390D00498BEB /* FeedCellView.swift in Sources */,
 				96EC27232CB375740011BC86 /* CommentViewModel.swift in Sources */,
+				96403B122CB59B21007B9723 /* UserCountManager.swift in Sources */,
 				96EECA6C2C91F58B00CD7AFF /* CompleteSignupView.swift in Sources */,
 				9611158C2C92A0740074EF91 /* InstagramTextFieldModifier.swift in Sources */,
 				96554F0C2C93571D00DBA4F8 /* BlueButtonView.swift in Sources */,
@@ -597,6 +601,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -625,6 +630,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
